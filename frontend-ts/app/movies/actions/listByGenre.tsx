@@ -1,3 +1,10 @@
+/**
+ * Descrição: Buscar e exibir filmes por gênero.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import { ConnectError } from "@bufbuild/connect";
@@ -36,6 +43,11 @@ const listByGenreSchema = z.object({
 type FormInput = z.input<typeof listByGenreSchema>;
 type FormOutput = z.output<typeof listByGenreSchema>;
 
+/**
+ * Converte um erro em mensagem legível para a UI.
+ * @param error - Erro recebido da chamada gRPC
+ * @returns Mensagem de erro amigável
+ */
 function getListByGenreErrorMessage(error: unknown) {
   if (error instanceof ConnectError) {
     return error.rawMessage || error.message;
@@ -60,18 +72,20 @@ export default function ListByGenreCard() {
     },
   });
 
-  async function onSubmit(data: FormOutput) {
-    const movieData = new ListByGenreRequest({
-      genre: data.genre,
-    });
+  /**
+   * Submete o formulário e busca filmes pelo gênero informado.
+   * @param formValues - Objeto contendo `genre`
+   */
+  async function onSubmit(formValues: FormOutput) {
+    const movieData = new ListByGenreRequest({ genre: formValues.genre });
 
     setRequestError(null);
     setMovies([]);
 
     try {
-      const res = await listByGenre(movieData);
-      setMovies(res.movies);
-      form.reset({ genre: data.genre });
+      const response = await listByGenre(movieData);
+      setMovies(response.movies);
+      form.reset({ genre: formValues.genre });
     } catch (error) {
       setRequestError(getListByGenreErrorMessage(error));
       console.error(error);

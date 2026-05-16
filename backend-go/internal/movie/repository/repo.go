@@ -1,13 +1,10 @@
-// ============================================================================
-// FILE: repo.go
-// DESCRIPTION: Camada de acesso a dados (Repository) - implementa operações
+// Descrição: Camada de acesso a dados (Repository) que implementa as operações
 //
-//	CRUD para filmes na coleção MongoDB
+//	CRUD para filmes na coleção MongoDB.
 //
-// AUTHOR: Equipe
-// CREATED: 2024-01-01
-// UPDATED: 2026-05-08
-// ============================================================================
+// Autor: Luiz
+// Data de criação: 16/05/2024
+// Datas de atualização: 16/05/2024
 package repository
 
 import (
@@ -18,30 +15,44 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+// Repository define a estrutura para o repositório de filmes.
 type Repository struct {
 	collection *mongo.Collection
 }
 
+// NewRepository cria uma nova instância do repositório para a coleção "movies".
+// Parâmetros:
+//   - db (*mongo.Database): o banco de dados MongoDB.
+//
+// Retorno:
+//   - (*Repository): o repositório inicializado.
 func NewRepository(db *mongo.Database) *Repository {
-	// NewRepository: Cria instância de repositório para coleção "movies"
-	// Parâmetros: db (*mongo.Database) - banco de dados MongoDB
-	// Retorno: (*Repository) - repositório inicializado
 	return &Repository{
 		collection: db.Collection("movies"),
 	}
 }
 
+// Create insere um novo filme no banco de dados.
+// Parâmetros:
+//   - ctx (context.Context): o contexto da requisição.
+//   - movie (*domain.MovieModel): o filme a ser inserido.
+//
+// Retorno:
+//   - (*mongo.InsertOneResult): o resultado da inserção.
+//   - (error): um erro, se ocorrer.
 func (r *Repository) Create(ctx context.Context, movie *domain.MovieModel) (*mongo.InsertOneResult, error) {
-	// Create: Insere novo filme no banco de dados
-	// Parâmetros: ctx (context.Context) - contexto, movie (*domain.MovieModel) - filme a inserir
-	// Retorno: (*mongo.InsertOneResult, error) - resultado ou erro
 	return r.collection.InsertOne(ctx, movie)
 }
 
+// Read recupera um filme pelo seu ID hexadecimal.
+// Parâmetros:
+//   - ctx (context.Context): o contexto da requisição.
+//   - id (string): o ObjectID do filme em formato hexadecimal.
+//
+// Retorno:
+//   - (*domain.MovieModel): o filme encontrado.
+//   - (error): um erro, se ocorrer.
 func (r *Repository) Read(ctx context.Context, id string) (*domain.MovieModel, error) {
-	// Read: Recupera filme por ID hexadecimal
-	// Parâmetros: ctx (context.Context) - contexto, id (string) - ObjectID em hex
-	// Retorno: (*domain.MovieModel, error) - filme encontrado ou erro
 	objectID, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -54,10 +65,16 @@ func (r *Repository) Read(ctx context.Context, id string) (*domain.MovieModel, e
 	return &movie, nil
 }
 
+// Update atualiza os campos de um filme existente.
+// Parâmetros:
+//   - ctx (context.Context): o contexto da requisição.
+//   - id (string): o ObjectID do filme em formato hexadecimal.
+//   - movie (*domain.MovieModel): os novos valores para o filme.
+//
+// Retorno:
+//   - (*mongo.UpdateResult): o resultado da atualização.
+//   - (error): um erro, se ocorrer.
 func (r *Repository) Update(ctx context.Context, id string, movie *domain.MovieModel) (*mongo.UpdateResult, error) {
-	// Update: Atualiza campos de um filme existente
-	// Parâmetros: ctx (context.Context) - contexto, id (string) - ObjectID em hex, update (*domain.MovieModel) - novos valores
-	// Retorno: (*mongo.UpdateResult, error) - resultado ou erro
 	return r.collection.UpdateOne(ctx, bson.M{"_id": movie.ID}, bson.M{"$set": bson.M{
 		"title":     movie.Title,
 		"year":      movie.Year,
@@ -70,10 +87,15 @@ func (r *Repository) Update(ctx context.Context, id string, movie *domain.MovieM
 	}})
 }
 
+// Delete remove um filme do banco de dados pelo seu ID.
+// Parâmetros:
+//   - ctx (context.Context): o contexto da requisição.
+//   - id (string): o ObjectID do filme em formato hexadecimal.
+//
+// Retorno:
+//   - (*mongo.DeleteResult): o resultado da exclusão.
+//   - (error): um erro, se ocorrer.
 func (r *Repository) Delete(ctx context.Context, id string) (*mongo.DeleteResult, error) {
-	// Delete: Remove filme do banco de dados pelo ID
-	// Parâmetros: ctx (context.Context) - contexto, id (string) - ObjectID em hex
-	// Retorno: (*mongo.DeleteResult, error) - resultado ou erro
 	objectID, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -81,10 +103,14 @@ func (r *Repository) Delete(ctx context.Context, id string) (*mongo.DeleteResult
 	return r.collection.DeleteOne(ctx, bson.M{"_id": objectID})
 }
 
+// List retorna todos os filmes do banco de dados.
+// Parâmetros:
+//   - ctx (context.Context): o contexto da requisição.
+//
+// Retorno:
+//   - ([]*domain.MovieModel): uma lista de filmes.
+//   - (error): um erro, se ocorrer.
 func (r *Repository) List(ctx context.Context) ([]*domain.MovieModel, error) {
-	// List: Retorna todos os filmes do banco de dados
-	// Parâmetros: ctx (context.Context) - contexto
-	// Retorno: ([]*domain.MovieModel, error) - lista de filmes ou erro
 	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err

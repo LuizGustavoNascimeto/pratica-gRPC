@@ -1,3 +1,10 @@
+/**
+ * Descrição: Hook que encapsula chamadas gRPC relacionadas a filmes.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import type {
@@ -22,73 +29,88 @@ export function useMovie() {
   const [movies, setMovies] = useState<MovieRes[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // GET MOVIE
+  /**
+   * Busca um filme por ID.
+   * @param req - `GetMovieRequest` com o campo `id`
+   * @returns `GetMovieResponse` do servidor
+   */
   const getMovie = async (req: GetMovieRequest): Promise<GetMovieResponse> => {
     setLoading(true);
     try {
-      const res = await movieClient.getMovie({ id: req.id });
-      return res;
+      const response = await movieClient.getMovie({ id: req.id });
+      return response;
     } finally {
       setLoading(false);
     }
   };
 
-  // LIST BY ACTOR
+  /**
+   * Lista filmes por ator e atualiza o estado local `movies`.
+   * @param req - `ListByActorRequest` com `actor`
+   */
   const listByActor = async (
     req: ListByActorRequest,
   ): Promise<ListByActorResponse> => {
     setLoading(true);
     try {
-      const res = await movieClient.listByActor({
+      const response = await movieClient.listByActor({
         actor: req.actor ?? "",
       });
 
-      setMovies(res.movies);
-      return res;
+      setMovies(response.movies);
+      return response;
     } finally {
       setLoading(false);
     }
   };
 
-  //LIST BY GENRE
+  /**
+   * Lista filmes por gênero e atualiza `movies`.
+   */
   const listByGenre = async (
     req: ListByGenreRequest,
   ): Promise<ListByGenreResponse> => {
     setLoading(true);
     try {
-      const res = await movieClient.listByGenre({
+      const response = await movieClient.listByGenre({
         genre: req.genre ?? "",
       });
 
-      setMovies(res.movies);
-      return res;
+      setMovies(response.movies);
+      return response;
     } finally {
       setLoading(false);
     }
   };
 
-  // CREATE
+  /**
+   * Cria um novo filme no servidor.
+   */
   const createMovie = async (
     req: CreateMovieRequest,
   ): Promise<CreateMovieResponse> => {
-    const res = await movieClient.createMovie({ movie: req.movie });
-    return res;
+    const response = await movieClient.createMovie({ movie: req.movie });
+    return response;
   };
 
-  // UPDATE
+  /**
+   * Atualiza um filme existente.
+   */
   const updateMovie = async (
     req: UpdateMovieRequest,
   ): Promise<UpdateMovieResponse> => {
-    const res = await movieClient.updateMovie({ id: req.id, movie: req.movie });
-    return res;
+    const response = await movieClient.updateMovie({ id: req.id, movie: req.movie });
+    return response;
   };
 
-  // DELETE
+  /**
+   * Exclui um filme por ID.
+   */
   const deleteMovie = async (
     req: DeleteMovieRequest,
   ): Promise<DeleteMovieResponse> => {
-    const res = await movieClient.deleteMovie({ id: req.id });
-    return res;
+    const response = await movieClient.deleteMovie({ id: req.id });
+    return response;
   };
 
   return {

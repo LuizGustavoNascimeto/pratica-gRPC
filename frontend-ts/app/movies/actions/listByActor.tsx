@@ -1,3 +1,11 @@
+/**
+ * Descrição: Componente React para buscar filmes por nome de ator e
+ * apresentar os resultados em uma tabela.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import { ConnectError } from "@bufbuild/connect";
@@ -33,10 +41,13 @@ const listByActorSchema = z.object({
   actor: z.string().min(1, "Nome do ator é obrigatório"),
 });
 
-//eai professor
 type FormInput = z.input<typeof listByActorSchema>;
 type FormOutput = z.output<typeof listByActorSchema>;
-
+/**
+ * Retorna uma mensagem de erro amigável a partir de um erro recebido
+ * @param error - Erro recebido da chamada ao servidor
+ * @returns Mensagem de erro para exibir na UI
+ */
 function getListByActorErrorMessage(error: unknown) {
   if (error instanceof ConnectError) {
     return error.rawMessage || error.message;
@@ -61,18 +72,22 @@ export default function ListByActorCard() {
     },
   });
 
-  async function onSubmit(data: FormOutput) {
+  /**
+   * Envia a requisição para listar filmes pelo nome do ator.
+   * @param formValues - Valores vindos do formulário (contém `actor`)
+   */
+  async function onSubmit(formValues: FormOutput) {
     const movieData = new ListByActorRequest({
-      actor: data.actor,
+      actor: formValues.actor,
     });
 
     setRequestError(null);
     setMovies([]);
 
     try {
-      const res = await listByActor(movieData);
-      setMovies(res.movies);
-      form.reset({ actor: data.actor });
+      const response = await listByActor(movieData);
+      setMovies(response.movies);
+      form.reset({ actor: formValues.actor });
     } catch (error) {
       setRequestError(getListByActorErrorMessage(error));
       console.error(error);
@@ -137,10 +152,10 @@ export default function ListByActorCard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {movies.map((movie) => (
-                <TableRow key={movie.id}>
-                  <TableCell className="font-medium">{movie.id}</TableCell>
-                  <TableCell>{movie.title}</TableCell>
+              {movies.map((movieItem) => (
+                <TableRow key={movieItem.id}>
+                  <TableCell className="font-medium">{movieItem.id}</TableCell>
+                  <TableCell>{movieItem.title}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -1,3 +1,10 @@
+/**
+ * Descrição: Componente para excluir um filme a partir do seu ID.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import { ConnectError } from "@bufbuild/connect";
@@ -28,6 +35,9 @@ const deleteMovieSchema = z.object({
 type FormInput = z.input<typeof deleteMovieSchema>;
 type FormOutput = z.output<typeof deleteMovieSchema>;
 
+/**
+ * Componente `DeleteMovieCard` — formulário para deletar um filme por ID.
+ */
 export default function DeleteMovieCard() {
   const { deleteMovie } = useMovie();
   const [deletedMovie, setDeletedMovie] = useState<DeleteMovieResponse>();
@@ -40,17 +50,19 @@ export default function DeleteMovieCard() {
     },
   });
 
-  async function onSubmit(data: FormOutput) {
-    const movieData = new DeleteMovieRequest({
-      id: data.id,
-    });
+  /**
+   * Envia requisição para excluir um filme.
+   * @param formValues - Objeto contendo `id` do filme a excluir
+   */
+  async function onSubmit(formValues: FormOutput) {
+    const movieData = new DeleteMovieRequest({ id: formValues.id });
 
     setRequestError(null);
     setDeletedMovie(undefined);
 
     try {
-      const res = await deleteMovie(movieData);
-      setDeletedMovie(res);
+      const response = await deleteMovie(movieData);
+      setDeletedMovie(response);
       form.reset();
     } catch (error) {
       setRequestError(getMovieErrorMessage(error));

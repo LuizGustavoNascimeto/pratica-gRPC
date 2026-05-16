@@ -1,3 +1,8 @@
+// Descrição: Ponto de entrada principal da aplicação. Inicializa o servidor HTTP,
+// conecta ao banco de dados, e configura os handlers para os serviços de Ping e Movie.
+// Autor: Luiz
+// Data de criação: 16/05/2024
+// Datas de atualização: 16/05/2024
 package main
 
 import (
@@ -17,6 +22,9 @@ import (
 	"github.com/rs/cors"
 )
 
+// main é a função principal que inicia a aplicação.
+// Ela carrega as variáveis de ambiente, conecta ao banco de dados,
+// inicializa os serviços e handlers, e inicia o servidor HTTP.
 func main() {
 	//env
 	err := godotenv.Load()

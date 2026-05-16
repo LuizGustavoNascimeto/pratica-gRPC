@@ -1,3 +1,11 @@
+/**
+ * Descrição: Formulário para criação de filmes. Envia dados para o serviço gRPC
+ * e exibe o último filme criado.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import { useForm, Controller } from "react-hook-form";
@@ -39,14 +47,14 @@ const createMovieSchema = z.object({
 type FormInput = z.input<typeof createMovieSchema>;
 type FormOutput = z.output<typeof createMovieSchema>;
 
-
-
+/**
+ * Componente `CreateMovieCard` — formulário para criar um filme.
+ */
 export default function CreateMovieCard() {
   const { createMovie } = useMovie();
   const [last, setLast] = useState<CreateMovieResponse>();
   const [requestError, setRequestError] = useState<string | null>(null);
 
-  // ✅ Three generics: <FieldValues, Context, TransformedValues>
   const form = useForm<FormInput, unknown, FormOutput>({
     resolver: zodResolver(createMovieSchema),
     defaultValues: {
@@ -61,21 +69,24 @@ export default function CreateMovieCard() {
     },
   });
 
-  // ✅ `data` is now correctly typed as FormOutput (year/runtime are `number`)
-  async function onSubmit(data: FormOutput) {
+  /**
+   * Envia a requisição de criação do filme para o servidor.
+   * @param formValues - Valores validados do formulário
+   */
+  async function onSubmit(formValues: FormOutput) {
     const movieData: CreateMovieRequest = new CreateMovieRequest({
       movie: {
-        ...data,
-        genres: data.genres.split(",").map((s) => s.trim()),
-        cast: data.cast.split(",").map((s) => s.trim()),
-        directors: data.directors.split(",").map((s) => s.trim()),
+        ...formValues,
+        genres: formValues.genres.split(",").map((s) => s.trim()),
+        cast: formValues.cast.split(",").map((s) => s.trim()),
+        directors: formValues.directors.split(",").map((s) => s.trim()),
       },
     });
     setRequestError(null);
 
     try {
-      const res = await createMovie(movieData);
-      setLast(res);
+      const response = await createMovie(movieData);
+      setLast(response);
       form.reset();
     } catch (error) {
       setRequestError(getMovieErrorMessage(error));

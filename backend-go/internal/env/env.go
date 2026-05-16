@@ -1,13 +1,10 @@
-// ============================================================================
-// FILE: env.go
-// DESCRIPTION: Utilitário para leitura de variáveis de ambiente com validação
+// Descrição: Utilitário para leitura de variáveis de ambiente com validação.
 //
-//	Falha se variável não estiver definida
+//	Falha se a variável não estiver definida.
 //
-// AUTHOR: Equipe
-// CREATED: 2024-01-01
-// UPDATED: 2026-05-08
-// ============================================================================
+// Autor: Luiz
+// Data de criação: 16/05/2024
+// Datas de atualização: 16/05/2024
 package env
 
 import (
@@ -15,10 +12,15 @@ import (
 	"os"
 )
 
+// GetEnv obtém o valor de uma variável de ambiente.
+// Parâmetros:
+//   - key (string): nome da variável de ambiente.
+//
+// Retorno:
+//   - (string): valor da variável de ambiente.
+//
+// A função causa um log fatal se a variável de ambiente não estiver definida.
 func GetEnv(key string) string {
-	// GetEnv: Obt\u00e9m valor de vari\u00e1vel de ambiente\n\t
-	// Par\u00e2metros: key (string) - nome da vari\u00e1vel de ambiente\n\t
-	// Retorno: (string) - valor da vari\u00e1vel ou log fatal se n\u00e3o existir\n\t,
 	value, exists := os.LookupEnv(key)
 	if !exists {
 		log.Fatalf("Environment variable %s not set", key)

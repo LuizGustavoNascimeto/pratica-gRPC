@@ -1,3 +1,10 @@
+/**
+ * Descrição: Formulário para atualizar dados de um filme existente.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import { ConnectError } from "@bufbuild/connect";
@@ -57,6 +64,10 @@ const defaultValues: FormInput = {
   runtime: 0,
 };
 
+/**
+ * Converte um erro em mensagem legível para a UI ao atualizar filme.
+ * @param error - Erro recebido
+ */
 function getUpdateMovieErrorMessage(error: unknown) {
   if (error instanceof ConnectError) {
     return error.rawMessage || error.message;
@@ -69,6 +80,10 @@ function getUpdateMovieErrorMessage(error: unknown) {
   return "Não foi possível atualizar o filme.";
 }
 
+/**
+ * Normaliza os valores de `GetMovieResponse.movie` para os campos do formulário.
+ * @param movie - Objeto de filme retornado pelo servidor
+ */
 function normalizeMovieValues(
   movie: NonNullable<GetMovieResponse["movie"]>,
 ): FormInput {
@@ -85,6 +100,9 @@ function normalizeMovieValues(
   };
 }
 
+/**
+ * Componente `UpdateMovieCard` — permite carregar e atualizar um filme.
+ */
 export default function UpdateMovieCard() {
   const { getMovie, updateMovie } = useMovie();
   const [fetchedMovie, setFetchedMovie] = useState<GetMovieResponse>();
@@ -97,6 +115,9 @@ export default function UpdateMovieCard() {
     defaultValues,
   });
 
+  /**
+   * Busca os dados do filme pelo ID informado e popula o formulário.
+   */
   async function handleFetchMovie() {
     const movieId = form.getValues("id").trim();
 
@@ -135,6 +156,10 @@ export default function UpdateMovieCard() {
     }
   }
 
+  /**
+   * Envia a requisição de atualização do filme.
+   * @param data - Valores validados do formulário
+   */
   async function onSubmit(data: FormOutput) {
     setRequestError(null);
     setSuccessMessage(null);

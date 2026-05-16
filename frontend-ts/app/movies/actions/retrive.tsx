@@ -1,3 +1,10 @@
+/**
+ * Descrição: Componente para recuperar (buscar) um filme por ID.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import { useForm, Controller } from "react-hook-form";
@@ -27,6 +34,9 @@ const getMovieSchema = z.object({
 type FormInput = z.input<typeof getMovieSchema>;
 type FormOutput = z.output<typeof getMovieSchema>;
 
+/**
+ * Componente `RetrieveMovieCard` — formulário para buscar filme por ID.
+ */
 export default function RetrieveMovieCard() {
   const { getMovie } = useMovie();
   const [retrievedMovie, setRetrievedMovie] = useState<GetMovieResponse>();
@@ -39,16 +49,18 @@ export default function RetrieveMovieCard() {
     },
   });
 
-  async function onSubmit(data: FormOutput) {
-    const movieData: GetMovieRequest = new GetMovieRequest({
-      id: data.id,
-    });
+  /**
+   * Envia requisição para recuperar um filme por ID.
+   * @param formValues - Objeto com `id` do filme
+   */
+  async function onSubmit(formValues: FormOutput) {
+    const movieData: GetMovieRequest = new GetMovieRequest({ id: formValues.id });
     setRequestError(null);
     setRetrievedMovie(undefined);
 
     try {
-      const res = await getMovie(movieData);
-      setRetrievedMovie(res);
+      const response = await getMovie(movieData);
+      setRetrievedMovie(response);
       form.reset();
     } catch (error) {
       setRequestError(getMovieErrorMessage(error));

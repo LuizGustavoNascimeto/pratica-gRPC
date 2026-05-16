@@ -5,22 +5,28 @@ import { pingClient } from "@/lib/network/client";
 import type { PingRes } from "@/grpc/gen/ping_pb";
 import { PingStatus } from "../types/status";
 
+/**
+ * Descrição: Hook para enviar ping ao servidor gRPC e gerenciar estado.
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
 export function usePing() {
-  // State to hold the response message
+  // Estado do status do ping
   const [status, setStatus] = useState<PingStatus>("idle");
 
-  // Function to call the ping service
+  /**
+   * Envia um ping ao servidor gRPC.
+   */
   const sendPing = async () => {
     try {
       setStatus("loading");
-      // Call the ping service and get the response
       const res: PingRes = await pingClient.ping({ message: "ping" });
-      // Update the state with the response message
+      // (Opcional) analisar `res` se necessário
+      setStatus("success");
     } catch (error) {
       console.error("Error calling ping service:", error);
       setStatus("error");
-    } finally {
-      setStatus("success");
     }
   };
 

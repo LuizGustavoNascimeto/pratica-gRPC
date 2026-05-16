@@ -1,3 +1,11 @@
+/**
+ * Descrição: Componente para verificar conectividade com o servidor gRPC
+ * (envia um ping e mostra estado/latência).
+ * Autor: Nome do Aluno
+ * Data de criação: 2026-05-16
+ * Última atualização: 2026-05-16
+ */
+
 "use client";
 
 import React, { useState } from "react";
@@ -24,7 +32,9 @@ export default function PingCard() {
   const { status, sendPing } = usePing();
   const [latency, setLatency] = useState<number | null>(null);
 
-  //essa função chatinha é só para saber as métricas.
+  /**
+   * Executa um ping com timeout e mede a latência.
+   */
   async function handlePing() {
     setLatency(null);
     const start = performance.now();

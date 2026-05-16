@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"rpc/internal/movie/service"
 
 	moviepb "rpc/internal/movie/proto/moviepb"
@@ -40,8 +39,6 @@ func (s *Server) CreateMovie(
 			Movie: ToProto(movie),
 		},
 	)
-
-	fmt.Printf("Created movie id: %v\n", res.Msg.Movie.Id)
 
 	return res, nil
 }

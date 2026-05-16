@@ -1,13 +1,10 @@
-// ============================================================================
-// FILE: mongoDB.go
-// DESCRIPTION: Cliente MongoDB singleton - gerencia conexão com banco
+// Descrição: Cliente MongoDB singleton que gerencia a conexão com o banco de dados
 //
-//	e provê acesso seguro a bancos e coleções
+//	e provê acesso seguro a bancos e coleções.
 //
-// AUTHOR: Equipe
-// CREATED: 2024-01-01
-// UPDATED: 2026-05-08
-// ============================================================================
+// Autor: Luiz
+// Data de criação: 16/05/2024
+// Datas de atualização: 16/05/2024
 package mongodb
 
 import (
@@ -22,6 +19,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
+// Client define a estrutura para o cliente MongoDB.
 type Client struct {
 	client *mongo.Client
 }
@@ -32,10 +30,14 @@ var (
 	initErr  error
 )
 
-// Connect: Inicializa singleton do MongoDB
-// DEVE ser chamada UMA VEZ na main. Chamadas subsequentes são ignoradas (sync.Once)
-// Parâmetros: uri (string) - string de conexão MongoDB
-// Retorno: (*Client, error) - cliente inicializado ou erro
+// Connect inicializa o singleton do MongoDB.
+// DEVE ser chamada UMA VEZ na main. Chamadas subsequentes são ignoradas (sync.Once).
+// Parâmetros:
+//   - uri (string): a string de conexão do MongoDB.
+//
+// Retorno:
+//   - (*Client): o cliente inicializado.
+//   - (error): um erro, se ocorrer.
 func Connect(uri string) (*Client, error) {
 	once.Do(func() {
 		serverAPI := options.ServerAPI(options.ServerAPIVersion1)
@@ -69,9 +71,10 @@ func Connect(uri string) (*Client, error) {
 	return instance, nil
 }
 
-// GetInstance: Retorna instância singleton já inicializada
-// Parâmetros: nenhum
-// Retorno: (*Client, error) - cliente inicializado ou erro se Connect não foi chamado
+// GetInstance retorna a instância singleton já inicializada.
+// Retorno:
+//   - (*Client): o cliente inicializado.
+//   - (error): um erro se Connect não foi chamado.
 func GetInstance() (*Client, error) {
 	if instance == nil {
 		return nil, errors.New("mongodb não inicializado: chame mongodb.Connect(uri) primeiro")
@@ -79,23 +82,30 @@ func GetInstance() (*Client, error) {
 	return instance, nil
 }
 
-// GetClient: Retorna cliente mongo subjacente
-// Parâmetros: nenhum
-// Retorno: (*mongo.Client) - cliente MongoDB
+// GetClient retorna o cliente mongo subjacente.
+// Retorno:
+//   - (*mongo.Client): o cliente MongoDB.
 func (c *Client) GetClient() *mongo.Client {
 	return c.client
 }
 
-// GetDatabase: Retorna referência a um banco de dados
-// Parâmetros: name (string) - nome do banco de dados
-// Retorno: (*mongo.Database) - referência do banco
+// GetDatabase retorna uma referência a um banco de dados.
+// Parâmetros:
+//   - name (string): o nome do banco de dados.
+//
+// Retorno:
+//   - (*mongo.Database): a referência do banco de dados.
 func (c *Client) GetDatabase(name string) *mongo.Database {
 	return c.client.Database(name)
 }
 
-// GetCollection: Retorna coleção de um banco específico
-// Parâmetros: database (string) - nome do banco, collection (string) - nome coleção
-// Retorno: (*mongo.Collection) - referência da coleção
+// GetCollection retorna uma coleção de um banco de dados específico.
+// Parâmetros:
+//   - database (string): o nome do banco de dados.
+//   - collection (string): o nome da coleção.
+//
+// Retorno:
+//   - (*mongo.Collection): a referência da coleção.
 func (c *Client) GetCollection(database, collection string) *mongo.Collection {
 	return c.client.Database(database).Collection(collection)
 }

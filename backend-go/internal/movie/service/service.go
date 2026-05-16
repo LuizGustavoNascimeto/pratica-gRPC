@@ -4,7 +4,7 @@
 //
 //	entre os clientes e o repositório de dados
 //
-// AUTHOR: Equipe
+// AUTHOR: Luiz Gustavo
 // CREATED: 2024-01-01
 // UPDATED: 2026-05-08
 // ============================================================================
