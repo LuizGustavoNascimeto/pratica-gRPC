@@ -1,0 +1,17 @@
+syntax = "proto3";
+option go_package = "./backend-go/internal/ping";
+
+package ping;
+
+
+message PingReq {
+  string message = 1;
+}
+
+message PingRes {
+  string message = 1;
+}
+
+service PingService {
+  rpc Ping (PingReq) returns (PingRes) {}
+}

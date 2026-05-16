@@ -1,0 +1,79 @@
+syntax = "proto3";
+option go_package = "./backend-go/internal/proto/moviepb";
+
+package moviepb;
+
+
+message MovieReq {
+  string title = 2;
+  int32 year = 3;
+  string plot = 4;
+  repeated string genres = 5;
+  repeated string cast = 6;
+  repeated string directors = 7;
+  string rated = 8;
+  int32 runtime = 9;
+}
+message MovieRes {
+  string id = 1;
+  string title = 2;
+  int32 year = 3;
+  string plot = 4;
+  repeated string genres = 5;
+  repeated string cast = 6;
+  repeated string directors = 7;
+  string rated = 8;
+  int32 runtime = 9;
+}
+
+message ErrorResponse {
+  string message = 1;
+}
+
+message CreateMovieRequest {
+  MovieReq movie = 1;
+}
+message CreateMovieResponse {
+  MovieRes movie = 1;
+}
+message GetMovieRequest {
+  string id = 1;
+}
+message GetMovieResponse {
+  MovieRes movie = 1;
+}
+message UpdateMovieRequest {
+  string id = 1;
+  MovieReq movie = 2;
+}
+message UpdateMovieResponse {
+  MovieRes movie = 1;
+}
+message DeleteMovieRequest {
+  string id = 1;
+}
+message DeleteMovieResponse {
+  bool success = 1;
+}
+message ListByGenreRequest {
+  string genre = 1;
+}
+message ListByGenreResponse {
+  repeated MovieRes movies = 1;
+}
+message ListByActorRequest {
+  string actor = 1;
+}
+message ListByActorResponse {
+  repeated MovieRes movies = 1;
+}
+
+service MovieService {
+  rpc CreateMovie (CreateMovieRequest) returns (CreateMovieResponse) {}
+  rpc GetMovie (GetMovieRequest) returns (GetMovieResponse) {}
+  rpc UpdateMovie (UpdateMovieRequest) returns (UpdateMovieResponse) {}
+  rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieResponse) {} 
+  rpc ListByGenre (ListByGenreRequest) returns (ListByGenreResponse) {}
+  rpc ListByActor (ListByActorRequest) returns (ListByActorResponse) {}
+}
+
